@@ -3,4 +3,5 @@
 /.idea
 *.iml
 *.log
-/node_modules
+.classpath
+.project
