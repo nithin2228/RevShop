@@ -166,29 +166,63 @@ public class ConsoleUI {
     }
     
     private void forgotPassword() {
+
         System.out.println("\n--- Forgot Password ---");
+
         System.out.print("Enter Email: ");
         String email = scanner.nextLine();
-        
+
         User user = authService.getUserByEmail(email);
         if (user == null) {
             System.out.println("User not found.");
             return;
         }
-        
+
         System.out.println("Security Question: " + user.getSecurityQuestion());
         System.out.print("Enter Answer: ");
         String answer = scanner.nextLine();
-        
-        System.out.print("Enter New Password: ");
-        String newPass = scanner.nextLine();
-        
-        if (authService.resetPassword(email, answer, newPass)) {
+
+        String newPassword;
+        String confirmPassword;
+
+        while (true) {
+
+            //  New password
+            System.out.print("Enter New Password: ");
+            newPassword = scanner.nextLine();
+
+            if (!isValidPassword(newPassword)) {
+                System.out.println(
+                    "Invalid password.\n" +
+                    "Password must contain:\n" +
+                    "- At least 8 characters\n" +
+                    "- One uppercase letter\n" +
+                    "- One lowercase letter\n" +
+                    "- One digit\n" +
+                    "- One special character"
+                );
+                continue;
+            }
+
+            //  Confirm password
+            System.out.print("Confirm New Password: ");
+            confirmPassword = scanner.nextLine();
+
+            if (!newPassword.equals(confirmPassword)) {
+                System.out.println("Passwords do not match. Please try again.");
+                continue;
+            }
+
+            break; //  valid & matched
+        }
+
+        if (authService.resetPassword(email, answer, newPassword)) {
             System.out.println("Password reset successfully. Please login.");
         } else {
-            System.out.println("Incorrect Request.");
+            System.out.println("Security answer incorrect. Password reset failed.");
         }
     }
+
 
     private void showSellerMenu() {
         System.out.println("\n--- Seller Dashboard ---");
