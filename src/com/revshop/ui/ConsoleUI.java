@@ -78,9 +78,8 @@ public class ConsoleUI {
 
     private void register() {
         System.out.println("\n--- Register ---");
-        
-        String email;
 
+        String email;
         while (true) {
             System.out.print("Enter Email: ");
             email = scanner.nextLine();
@@ -92,24 +91,48 @@ public class ConsoleUI {
             }
         }
 
-        System.out.print("Enter Password: ");
-        String password = scanner.nextLine();
+        //  Password validation loop
+        String password;
+        while (true) {
+            System.out.print("Enter Password: ");
+            password = scanner.nextLine();
+
+            if (isValidPassword(password)) {
+                break;
+            } else {
+                System.out.println(
+                    "Invalid password.\n" +
+                    "Password must contain:\n" +
+                    "- At least 8 characters\n" +
+                    "- One uppercase letter\n" +
+                    "- One lowercase letter\n" +
+                    "- One digit\n" +
+                    "- One special character"
+                );
+            }
+        }
+
         System.out.print("Enter Name: ");
         String name = scanner.nextLine();
+
         System.out.print("Enter Role (BUYER/SELLER): ");
         String role = scanner.nextLine().toUpperCase();
+
         System.out.print("Enter Phone: ");
         String phone = scanner.nextLine();
+
         System.out.print("Enter Address: ");
         String address = scanner.nextLine();
+
         System.out.print("Security Question: ");
         String question = scanner.nextLine();
+
         System.out.print("Security Answer: ");
         String answer = scanner.nextLine();
 
         User user = new User();
         user.setEmail(email);
-        user.setPasswordHash(password); // Will be hashed in service
+        user.setPasswordHash(password);
         user.setName(name);
         user.setRole(role);
         user.setPhone(phone);
@@ -123,6 +146,7 @@ public class ConsoleUI {
             System.out.println("Registration Failed. Email might already exist.");
         }
     }
+
 
     private void login() {
         System.out.println("\n--- Login ---");
@@ -642,6 +666,13 @@ public class ConsoleUI {
 
         return email != null && email.matches(emailRegex);
     }
+    
+    private boolean isValidPassword(String password) {
+        String passwordRegex =
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return password.matches(passwordRegex);
+    }
+
 
 }
 

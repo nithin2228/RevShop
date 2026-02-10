@@ -15,11 +15,26 @@ public class AuthService {
     }
 
     public boolean registerUser(User user) {
+
+        // Validate password strength
+        if (!isValidPassword(user.getPasswordHash())) {
+            System.out.println(
+                "Password must be at least 8 characters long and contain:\n" +
+                "- One uppercase letter\n" +
+                "- One lowercase letter\n" +
+                "- One digit\n" +
+                "- One special character"
+            );
+            return false;
+        }
+
         // Hash password before saving
         String hashedPassword = hashPassword(user.getPasswordHash());
         user.setPasswordHash(hashedPassword);
+
         return userDAO.registerUser(user);
     }
+
 
     public User login(String email, String password) {
         User user = userDAO.getUserByEmail(email);
@@ -60,4 +75,14 @@ public class AuthService {
     public User getUserByEmail(String email) {
         return userDAO.getUserByEmail(email);
     }
+    
+    //pasword atlest 8 charcters
+    private boolean isValidPassword(String password) {
+
+        String passwordRegex =
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+        return password.matches(passwordRegex);
+    }
+
 }
